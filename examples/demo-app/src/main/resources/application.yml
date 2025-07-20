@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: claude-cli-demo
+
+server:
+  port: 8080
+
+claude:
+  cli:
+    cli-path: claude
+    default-model: claude-3-opus-20240229
+    verbose: true
+    working-directory: ${user.dir}
+    
+    session:
+      persist-history: true
+      persist-context: true
+      history-directory: ${java.io.tmpdir}/claude-demo-history
+      context-directory: ${java.io.tmpdir}/claude-demo-context
+      
+    security:
+      enabled: true
+      log-all-commands: true
+      whitelisted-commands:
+        - ls
+        - pwd
+        - echo
+        - cat
+        - grep
+        - git status
+        - npm list
+      whitelisted-paths:
+        - ${user.home}/Documents
+        - ${user.home}/Downloads
+        - /tmp
+        
+    tmux:
+      enabled: true
+      default-session-prefix: claude-demo-
+      
+logging:
+  level:
+    com.claudecli: DEBUG
+    com.claudecli.demo: DEBUG
