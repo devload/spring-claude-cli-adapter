@@ -1,26 +1,26 @@
 # Spring Claude CLI Adapter
 
-Spring Boot 애플리케이션에서 Claude CLI를 Spring Bean으로 사용할 수 있게 해주는 라이브러리입니다. Claude AI와의 대화형 인터페이스를 프로그래밍 방식으로 제어하고 자동화할 수 있습니다.
+A Spring Boot compatible library that wraps Claude CLI as a Spring Bean, enabling programmatic control and automation of Claude AI's conversational interface within Spring applications.
 
-## 🚀 주요 기능
+## 🚀 Key Features
 
-- ✅ **Spring Bean 통합**: DI를 통한 간편한 사용
-- ✅ **다양한 실행 모드**: 동기/비동기/스트림 실행 지원
-- ✅ **세션 관리**: 대화 컨텍스트 유지 및 격리된 멀티 세션
-- ✅ **Tmux 통합**: 고급 터미널 제어 및 백그라운드 실행
-- ✅ **보안 정책**: 명령어 화이트리스트/블랙리스트, 승인 정책
-- ✅ **완전한 CLI 옵션 지원**: 모든 Claude CLI 플래그 사용 가능
-- ✅ **Spring Boot 자동 설정**: 간단한 설정으로 즉시 사용
-- ✅ **실시간 스트림 처리**: Claude 응답을 실시간으로 처리
+- ✅ **Spring Bean Integration**: Easy usage through dependency injection
+- ✅ **Multiple Execution Modes**: Support for synchronous, asynchronous, and streaming execution
+- ✅ **Session Management**: Maintain conversation context with isolated multi-session support
+- ✅ **Tmux Integration**: Advanced terminal control and background execution
+- ✅ **Security Policies**: Command whitelisting/blacklisting and approval policies
+- ✅ **Full CLI Options Support**: All Claude CLI flags available
+- ✅ **Spring Boot Auto-configuration**: Instant setup with simple configuration
+- ✅ **Real-time Stream Processing**: Process Claude responses in real-time
 
-## 📋 요구사항
+## 📋 Requirements
 
-- Java 17 이상
-- Spring Boot 3.2.0 이상
-- Claude CLI가 시스템에 설치되어 있어야 함
-- (선택사항) tmux - 고급 세션 관리 기능 사용 시
+- Java 17 or higher
+- Spring Boot 3.2.0 or higher
+- Claude CLI installed on the system
+- (Optional) tmux - for advanced session management features
 
-## 🔧 설치
+## 🔧 Installation
 
 ### Maven
 
@@ -38,9 +38,9 @@ Spring Boot 애플리케이션에서 Claude CLI를 Spring Bean으로 사용할 �
 implementation 'com.claudecli:spring-claude-cli-adapter:1.0.0-SNAPSHOT'
 ```
 
-## 🎯 빠른 시작
+## 🎯 Quick Start
 
-### 1. 기본 사용법
+### 1. Basic Usage
 
 ```java
 @Service
@@ -50,14 +50,14 @@ public class ClaudeService {
     private final ClaudeCliWrapper claudeCli;
     
     public void basicExample() {
-        // 간단한 질문
-        ClaudeResponse response = claudeCli.execute("Spring Boot가 뭔가요?");
+        // Simple query
+        ClaudeResponse response = claudeCli.execute("What is Spring Boot?");
         System.out.println(response.getResponse());
     }
 }
 ```
 
-### 2. 옵션 설정
+### 2. With Options
 
 ```java
 public void advancedExample() {
@@ -69,75 +69,75 @@ public void advancedExample() {
         .workingDirectory("/my/project")
         .build();
     
-    ClaudeResponse response = claudeCli.execute("코드 리뷰해줘", options);
+    ClaudeResponse response = claudeCli.execute("Review this code", options);
 }
 ```
 
-### 3. 스트림 처리
+### 3. Stream Processing
 
 ```java
 public void streamExample() {
-    // 실시간으로 응답 받기
-    claudeCli.executeStream("긴 이야기를 써줘", 
+    // Receive responses in real-time
+    claudeCli.executeStream("Write a long story", 
         line -> System.out.println("Claude: " + line));
 }
 ```
 
-### 4. 세션 관리
+### 4. Session Management
 
 ```java
 public void sessionExample() {
-    // 대화 컨텍스트를 유지하는 세션 생성
+    // Create a session that maintains conversation context
     ClaudeSession session = claudeCli.createSession("user-123");
     
-    ClaudeResponse resp1 = session.send("내 이름은 홍길동이야");
-    ClaudeResponse resp2 = session.send("내 이름이 뭐라고 했지?");
-    // Claude가 이전 대화 내용을 기억함
+    ClaudeResponse resp1 = session.send("My name is John");
+    ClaudeResponse resp2 = session.send("What did I just tell you my name was?");
+    // Claude remembers the previous conversation
     
     session.close();
 }
 ```
 
-### 5. 비동기 실행
+### 5. Asynchronous Execution
 
 ```java
 public void asyncExample() {
     CompletableFuture<ClaudeResponse> future = 
-        claudeCli.executeAsync("복잡한 작업 수행해줘");
+        claudeCli.executeAsync("Perform a complex task");
     
     future.thenAccept(response -> {
-        System.out.println("완료: " + response.getResponse());
+        System.out.println("Completed: " + response.getResponse());
     });
 }
 ```
 
-## ⚙️ 설정
+## ⚙️ Configuration
 
 ### application.yml
 
 ```yaml
 claude:
   cli:
-    # Claude CLI 실행 파일 경로
+    # Path to Claude CLI executable
     cli-path: claude
     
-    # 기본 모델 설정
+    # Default model configuration
     default-model: claude-3-opus-20240229
     
-    # API 키 (환경변수 권장)
+    # API key (environment variable recommended)
     api-key: ${CLAUDE_API_KEY}
     
-    # 위험한 작업 자동 승인
+    # Auto-approve dangerous operations
     dangerously-skip-permissions: false
     
-    # 작업 디렉토리
+    # Working directory
     working-directory: ${user.dir}
     
-    # 기본 파라미터
+    # Default parameters
     default-max-tokens: 4096
     default-temperature: 0.7
     
-    # 세션 설정
+    # Session configuration
     session:
       persist-history: true
       persist-context: true
@@ -145,7 +145,7 @@ claude:
       context-directory: /tmp/claude-context
       max-sessions-per-user: 10
       
-    # 보안 설정
+    # Security configuration
     security:
       enabled: true
       require-approval-for-all-commands: false
@@ -171,16 +171,16 @@ claude:
         - /sys
         - /boot
         
-    # Tmux 설정
+    # Tmux configuration
     tmux:
       enabled: true
       default-session-prefix: claude-
       auto-cleanup-on-shutdown: true
 ```
 
-## 🛡️ 보안
+## 🛡️ Security
 
-### 커스텀 보안 정책 구현
+### Custom Security Policy Implementation
 
 ```java
 @Component
@@ -188,7 +188,7 @@ public class MySecurityPolicy implements CommandSecurityPolicy {
     
     @Override
     public boolean isCommandAllowed(String command) {
-        // 위험한 명령어 차단
+        // Block dangerous commands
         if (command.contains("rm -rf") || command.contains("format")) {
             return false;
         }
@@ -197,11 +197,11 @@ public class MySecurityPolicy implements CommandSecurityPolicy {
     
     @Override
     public ApprovalResult requiresApproval(CommandExecution cmd) {
-        // sudo 명령어는 사용자 승인 필요
+        // Sudo commands require user approval
         if (cmd.getCommand().contains("sudo")) {
             return ApprovalResult.REQUIRES_USER_APPROVAL;
         }
-        // 파일 쓰기는 자동 승인
+        // Auto-approve file writes
         if (cmd.getCommand().startsWith("echo") && cmd.getCommand().contains(">")) {
             return ApprovalResult.APPROVED;
         }
@@ -212,7 +212,7 @@ public class MySecurityPolicy implements CommandSecurityPolicy {
     public boolean isFileOperationAllowed(String filePath, FileOperation op) {
         Path path = Paths.get(filePath).normalize().toAbsolutePath();
         
-        // 시스템 디렉토리 쓰기 금지
+        // Prevent writes to system directories
         if (op == FileOperation.WRITE || op == FileOperation.DELETE) {
             return !path.startsWith("/etc") && !path.startsWith("/sys");
         }
@@ -221,9 +221,9 @@ public class MySecurityPolicy implements CommandSecurityPolicy {
 }
 ```
 
-## 🎮 고급 기능
+## 🎮 Advanced Features
 
-### Tmux 세션 관리
+### Tmux Session Management
 
 ```java
 @Service
@@ -234,7 +234,7 @@ public class TmuxClaudeService {
     private final TmuxSessionManager tmuxManager;
     
     public void runInTmux() {
-        // Tmux 세션에서 Claude 실행
+        // Run Claude in a tmux session
         ClaudeCliOptions options = ClaudeCliOptions.builder()
             .executionMode(ExecutionMode.TMUX)
             .tmuxOptions(TmuxOptions.builder()
@@ -245,23 +245,23 @@ public class TmuxClaudeService {
                 .build())
             .build();
         
-        claudeCli.execute("개발 서버 시작해줘", options);
+        claudeCli.execute("Start the development server", options);
         
-        // 나중에 세션 확인
+        // Check session output later
         String output = tmuxManager.capturePane("claude-dev");
         System.out.println("Session output: " + output);
     }
 }
 ```
 
-### 병렬 실행
+### Parallel Execution
 
 ```java
 public void parallelExecution() {
     List<String> prompts = Arrays.asList(
-        "Python 코드 작성해줘",
-        "Java 코드 작성해줘",
-        "JavaScript 코드 작성해줘"
+        "Write Python code",
+        "Write Java code",
+        "Write JavaScript code"
     );
     
     List<CompletableFuture<ClaudeResponse>> futures = prompts.stream()
@@ -282,7 +282,7 @@ public void parallelExecution() {
 }
 ```
 
-### REST API 통합 예제
+### REST API Integration Example
 
 ```java
 @RestController
@@ -316,22 +316,22 @@ public class ClaudeController {
 }
 ```
 
-## 📁 프로젝트 구조
+## 📁 Project Structure
 
 ```
 spring-claude-cli-adapter/
 ├── src/main/java/com/claudecli/adapter/
-│   ├── core/                    # 핵심 인터페이스 및 실행 엔진
-│   ├── service/                 # 서비스 구현체
-│   ├── model/                   # 데이터 모델
-│   ├── security/                # 보안 정책
-│   ├── config/                  # Spring Boot 자동 설정
-│   └── util/                    # 유틸리티
-├── examples/                    # 예제 애플리케이션
+│   ├── core/                    # Core interfaces and execution engine
+│   ├── service/                 # Service implementations
+│   ├── model/                   # Data models
+│   ├── security/                # Security policies
+│   ├── config/                  # Spring Boot auto-configuration
+│   └── util/                    # Utilities
+├── examples/                    # Example applications
 └── pom.xml
 ```
 
-## 🤝 기여하기
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -339,26 +339,26 @@ spring-claude-cli-adapter/
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 라이선스
+## 📄 License
 
-이 프로젝트는 Apache License 2.0 라이선스 하에 배포됩니다.
+This project is distributed under the Apache License 2.0.
 
-## 🔗 관련 링크
+## 🔗 Related Links
 
-- [Claude CLI 공식 문서](https://docs.anthropic.com/claude-cli)
-- [Spring Boot 문서](https://spring.io/projects/spring-boot)
-- [예제 프로젝트](./examples/demo-app)
+- [Claude CLI Official Documentation](https://docs.anthropic.com/claude-cli)
+- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
+- [Example Project](./examples/demo-app)
 
 ## ❓ FAQ
 
-**Q: Claude CLI는 어떻게 설치하나요?**
-A: [Claude CLI 설치 가이드](https://docs.anthropic.com/claude-cli/installation)를 참고하세요.
+**Q: How do I install Claude CLI?**
+A: Please refer to the [Claude CLI Installation Guide](https://docs.anthropic.com/claude-cli/installation).
 
-**Q: API 키는 어디서 얻나요?**
-A: [Anthropic Console](https://console.anthropic.com)에서 API 키를 발급받을 수 있습니다.
+**Q: Where can I get an API key?**
+A: You can obtain an API key from the [Anthropic Console](https://console.anthropic.com).
 
-**Q: 여러 사용자가 동시에 사용할 수 있나요?**
-A: 네, 세션 관리 기능을 통해 각 사용자별로 독립된 대화 컨텍스트를 유지할 수 있습니다.
+**Q: Can multiple users use this concurrently?**
+A: Yes, the session management feature maintains independent conversation contexts for each user.
 
-**Q: 프로덕션 환경에서 사용해도 되나요?**
-A: 보안 정책을 적절히 설정하고, API 사용량을 모니터링하면서 사용하시기 바랍니다.
+**Q: Is this production-ready?**
+A: Yes, with proper security policies configured and API usage monitoring in place.
